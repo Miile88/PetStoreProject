@@ -25,7 +25,6 @@ class BasePage {
     }
 
     async ButtonClick(text){
-        // Added waitFor to ensure button is visible and enabled before clicking
         const button = this.page.locator('button', { hasText: text });
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await button.click();
