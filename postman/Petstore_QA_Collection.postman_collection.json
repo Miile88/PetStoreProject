@@ -1,0 +1,2425 @@
+{
+	"info": {
+		"_postman_id": "8b72a983-b593-40df-b427-f78e8ceed64a",
+		"name": "Petstore_QA_Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46168184"
+	},
+	"item": [
+		{
+			"name": "Usermodel_positive_test",
+			"item": [
+				{
+					"name": "CreateUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var createuser = pm.response.json();\r",
+									"\r",
+									"\r",
+									"\r",
+									"var CreateUserSchema=\r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"//check status code\r",
+									"pm.test(\"1.User Created Successfully\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"//check if response  schema is valid \r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(CreateUserSchema);\r",
+									"});\r",
+									"//chech request body\r",
+									"pm.test(\"Request body has all required fields with correct types\", function () {\r",
+									"    const body = JSON.parse(pm.request.body.raw);\r",
+									"\r",
+									"    const expectedFields = {\r",
+									"        id: \"number\",\r",
+									"        username: \"string\",\r",
+									"        firstName: \"string\",\r",
+									"        lastName: \"string\",\r",
+									"        email: \"string\",\r",
+									"        password: \"string\",\r",
+									"        phone: \"string\",\r",
+									"        userStatus: \"number\"\r",
+									"    };\r",
+									"\r",
+									"    for (let key in expectedFields) {\r",
+									"        pm.expect(body).to.have.property(key);\r",
+									"        pm.expect(body[key]).to.be.a(expectedFields[key]);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const randomnum = Math.floor((Math.random()*100+1));\r",
+									"var randomstring =Math.random().toString(36).substring(2);\r",
+									"\r",
+									"\r",
+									"pm.collectionVariables.set(\"id\",randomnum),\r",
+									"pm.environment.set(\"username\",randomstring),\r",
+									"pm.collectionVariables.set(\"firstname\",\"Jack\"),\r",
+									"pm.collectionVariables.set(\"lastname\",\"Smith\"),\r",
+									"pm.collectionVariables.set(\"email\",randomstring+\"gmail.com\"),\r",
+									"pm.collectionVariables.set(\"password\",randomstring),\r",
+									"pm.collectionVariables.set(\"phone\",\"592286745\"),\r",
+									"pm.collectionVariables.set(\"status\",0)\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{id}},\r\n  \"username\": \"{{username}}\",\r\n  \"firstName\": \"{{firstname}}\",\r\n  \"lastName\": \"{{lastname}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"phone\": \"{{phone}}\",\r\n  \"userStatus\": {{status}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://petstore.swagger.io/v2/user' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"id\": 0,\r\n  \"username\": \"jack123\",\r\n  \"firstName\": \"jack\",\r\n  \"lastName\": \"string\",\r\n  \"email\": \"string\",\r\n  \"password\": \"string\",\r\n  \"phone\": \"string\",\r\n  \"userStatus\": 0\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "LogUserIntoSystem",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"const token = pm.response.json().message.split(\": \")[1];\r",
+									"pm.environment.set(\"token\", token);\r",
+									"\r",
+									"var login = pm.response.json();\r",
+									"\r",
+									"var loginSchema = \r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"//check status code\r",
+									"pm.test(\"1.response should be 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(loginSchema);\r",
+									"});\r",
+									"\r",
+									"//check required fields\r",
+									"pm.test(\"Username and password are sent\", function () {\r",
+									"    const url = pm.request.url.query;\r",
+									"    const username = url.find(q => q.key === \"username\");\r",
+									"    const password = url.find(q => q.key === \"password\");\r",
+									"\r",
+									"    pm.expect(username).to.not.be.undefined;\r",
+									"    pm.expect(username.value).to.not.be.empty;\r",
+									"    pm.expect(password).to.not.be.undefined;\r",
+									"    pm.expect(password.value).to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/login?username={{username}}&password={{password}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "{{username}}"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://petstore.swagger.io/v2/user/login?username=Milena123&password=string' \\\r\n  -H 'accept: application/json'\r\n"
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserByUsername",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var getuser = pm.response.json();\r",
+									"\r",
+									"var schema = \r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"username\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"firstName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"lastName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"email\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"password\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"phone\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"userStatus\": {\r",
+									"      \"type\": \"number\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"username\",\r",
+									"    \"firstName\",\r",
+									"    \"lastName\",\r",
+									"    \"email\",\r",
+									"    \"password\",\r",
+									"    \"phone\",\r",
+									"    \"userStatus\"\r",
+									"  ]\r",
+									"}\r",
+									"//schema validation\r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"//username value\r",
+									"pm.test(\"2.check username value\",function(){\r",
+									"    pm.expect(getuser.username).to.eql(pm.environment.get(\"username\"));\r",
+									"\r",
+									"});\r",
+									"\r",
+									"//firstname value\r",
+									"pm.test(\"3.check firstname value\",function(){\r",
+									"    pm.expect(getuser.firstName).to.eql(pm.collectionVariables.get(\"firstname\"));\r",
+									"});\r",
+									"\r",
+									"//lastname value\r",
+									"pm.test(\"4.check lastname value\",function(){\r",
+									"    pm.expect(getuser.lastName).to.eql(pm.collectionVariables.get(\"lastname\"));\r",
+									"});\r",
+									"\r",
+									"//password value\r",
+									"pm.test(\"5.check password value\",function(){\r",
+									"    pm.expect(getuser.password).to.eql(pm.collectionVariables.get(\"password\"));\r",
+									"});\r",
+									"\r",
+									"//phone value\r",
+									"pm.test(\"6.check phone value\",function(){\r",
+									"    pm.expect(getuser.phone).to.eql(pm.collectionVariables.get(\"phone\"));\r",
+									"});\r",
+									"//user status value\r",
+									"pm.test(\"7.check userStatus value\",function(){\r",
+									"    pm.expect(getuser.userStatus).to.eql(pm.collectionVariables.get(\"status\"));\r",
+									"});\r",
+									"//status code\r",
+									"pm.test(\"9.response should be 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/{{username}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"{{username}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://petstore.swagger.io/v2/user/Milena123' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUserByUsername",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const deleteuser = pm.response.json();\r",
+									"\r",
+									"\r",
+									"var DeleteSchema =  \r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"//check schema validation\r",
+									"pm.test(\"1.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(DeleteSchema);\r",
+									"});\r",
+									"\r",
+									"//check status code\r",
+									"pm.test(\"2.response should be 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//request contain required field\r",
+									"pm.test(\"Username is passed in URL and is not empty\", function () {\r",
+									"    const url = pm.request.url.toString(); \r",
+									"    const username = pm.environment.get(\"username\");\r",
+									"\r",
+									"    pm.expect(url).to.include(username);\r",
+									"\r",
+									"    pm.expect(username).to.not.be.empty;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/user/{{username}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"{{username}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'DELETE' \\\r\n  'https://petstore.swagger.io/v2/user/string' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Petmodel_positive_test",
+			"item": [
+				{
+					"name": "AddPet",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateId() {\r",
+									"  return Math.floor(Math.random() * 100 + 100);\r",
+									"}\r",
+									"pm.environment.set(\"petId\",generateId());\r",
+									"pm.collectionVariables.set(\"tagId\", generateId());\r",
+									"pm.collectionVariables.set(\"categoryId\", generateId());\r",
+									"\r",
+									"function randomName() {\r",
+									"   var nameLength = Math.floor(Math.random() * 3) + 8; // \r",
+									"   var name = '';\r",
+									"   var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+									"\r",
+									"   for (var i = 0; i < nameLength; i++) {\r",
+									"       name += characters.charAt(Math.floor(Math.random() * characters.length));\r",
+									"   }\r",
+									"\r",
+									"   return name;\r",
+									"}\r",
+									"pm.collectionVariables.set(\"Name1\",randomName());\r",
+									"pm.collectionVariables.set(\"Name2\", randomName());\r",
+									"pm.collectionVariables.set(\"Name3\", randomName());\r",
+									"\r",
+									"function randomStatus() {\r",
+									"    var status = ['available', 'pending','sold'];\r",
+									"    var randomIndex = Math.floor(Math.random() * status.length);\r",
+									"\r",
+									"    return status[randomIndex];\r",
+									"}\r",
+									"pm.collectionVariables.set(\"status\",randomStatus())\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const addpet = pm.response.json();\r",
+									"\r",
+									"const schema =\r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"category\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"number\"\r",
+									"        },\r",
+									"        \"name\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"name\"\r",
+									"      ]\r",
+									"    },\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"photoUrls\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": {\r",
+									"        \"type\": \"string\"\r",
+									"      }\r",
+									"    },\r",
+									"    \"tags\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"          \"id\": {\r",
+									"            \"type\": \"number\"\r",
+									"          },\r",
+									"          \"name\": {\r",
+									"            \"type\": \"string\"\r",
+									"          }\r",
+									"        },\r",
+									"        \"required\": [\r",
+									"          \"id\",\r",
+									"          \"name\"\r",
+									"        ]\r",
+									"      }\r",
+									"    },\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"category\",\r",
+									"    \"name\",\r",
+									"    \"photoUrls\",\r",
+									"    \"tags\",\r",
+									"    \"status\"\r",
+									"  ]\r",
+									"}\r",
+									"//pet schema validation\r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"//status code \r",
+									"pm.test(\"response should be 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//pet id value\r",
+									"pm.test(\"check pet id value\",function(){\r",
+									"    pm.expect(addpet.id).to.eql(pm.environment.get(\"petId\"));\r",
+									"});\r",
+									"//pet category value 1\r",
+									"pm.test(\"check category id value\",function(){\r",
+									"    pm.expect(addpet.category.id).to.eql(pm.collectionVariables.get(\"categoryId\"));\r",
+									"});\r",
+									"//pet category value 2\r",
+									"pm.test(\"check pet category name value\",function(){\r",
+									"    pm.expect(addpet.category.name).to.eql(pm.collectionVariables.get(\"Name1\"));\r",
+									"});\r",
+									"//pet name value\r",
+									"pm.test(\"check pet name value\",function(){\r",
+									"    pm.expect(addpet.name).to.eql(pm.collectionVariables.get(\"Name2\"));\r",
+									"});\r",
+									"//pet photoUrls value\r",
+									"pm.test(\"check url value\",function(){\r",
+									"    pm.expect(addpet.photoUrls[0]).to.eql(\"https://example.com/dog.jpg\");\r",
+									"});\r",
+									"//pet tags value 1\r",
+									"pm.test(\"check tag id value\",function(){\r",
+									"    pm.expect(addpet.tags[0].id).to.eql(pm.collectionVariables.get(\"tagId\"));\r",
+									"});\r",
+									"//pet tags value 2\r",
+									"pm.test(\"check tag name value\",function(){\r",
+									"    pm.expect(addpet.tags[0].name).to.eql(pm.collectionVariables.get(\"Name3\"));\r",
+									"});\r",
+									"//pet status value\r",
+									"pm.test(\"check id value\",function(){\r",
+									"    pm.expect(addpet.status).to.eql(pm.collectionVariables.get(\"status\"));\r",
+									"});\r",
+									"//required feald\r",
+									"\r",
+									"\r",
+									"pm.test(\"should not be null\", function () {\r",
+									"    pm.expect(addpet).to.not.be.null;\r",
+									"    pm.expect(addpet.petId).to.not.be.null;\r",
+									"    pm.expect(addpet.category.id).to.not.be.null;\r",
+									"    pm.expect(addpet.category.name).to.not.be.null;\r",
+									"    pm.expect(addpet.name).to.not.be.null;\r",
+									"    pm.expect(addpet.photoUrls[0]).to.not.be.null;\r",
+									"    pm.expect(addpet.tags[0].id).to.not.be.null;\r",
+									"    pm.expect(addpet.tags[0].name).to.not.be.null;\r",
+									"    pm.expect(addpet.status).to.not.be.null;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{petId}},\r\n  \"category\": {\r\n    \"id\": {{categoryId}},\r\n    \"name\": \"{{Name1}}\"\r\n  },\r\n  \"name\": \"{{Name2}}\",\r\n  \"photoUrls\": [\r\n    \"https://example.com/dog.jpg\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": {{tagId}},\r\n      \"name\": \"{{Name3}}\"\r\n    }\r\n  ],\r\n  \"status\":\"{{status}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pet",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pet"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://petstore.swagger.io/v2/pet' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"id\": 0,\r\n  \"category\": {\r\n    \"id\": 0,\r\n    \"name\": \"toby\"\r\n  },\r\n  \"name\": \"doggie\",\r\n  \"photoUrls\": [\r\n    \"string\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 0,\r\n      \"name\": \"string\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "FindPetByStatus",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const getpet = pm.response.json();\r",
+									"var schema = \r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"array\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"category\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"number\"\r",
+									"        },\r",
+									"        \"name\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"name\"\r",
+									"      ]\r",
+									"    },\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"photoUrls\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": {\r",
+									"        \"type\": \"string\"\r",
+									"      }\r",
+									"    },\r",
+									"    \"tags\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"          \"id\": {\r",
+									"            \"type\": \"number\"\r",
+									"          },\r",
+									"          \"name\": {\r",
+									"            \"type\": \"string\"\r",
+									"          }\r",
+									"        },\r",
+									"        \"required\": [\r",
+									"          \"id\",\r",
+									"          \"name\"\r",
+									"        ]\r",
+									"      }\r",
+									"    },\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"category\",\r",
+									"    \"name\",\r",
+									"    \"photoUrls\",\r",
+									"    \"tags\",\r",
+									"    \"status\"\r",
+									"  ]\r",
+									"};\r",
+									"//schema validation\r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"//status code\r",
+									"pm.test(\"response should be 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"function processPets(getpet) {\r",
+									"    for (let i = 0; i < getpet.length; i++) {\r",
+									"        const pet = getpet[i];\r",
+									"//pet id value\r",
+									"    pm.test(\"check pet id value\",function(){\r",
+									"    pm.expect(pet.id).to.eql(pm.environment.get(\"petId\"));\r",
+									"    \r",
+									"});\r",
+									"//pet category value 1\r",
+									"    pm.test(\"check category id value\",function(){\r",
+									"    pm.expect(pet.category.id).to.eql(pm.collectionVariables.get(\"categoryId\"));\r",
+									"});\r",
+									"\r",
+									"//pet category value 2\r",
+									"    pm.test(\"check pet category name value\",function(){\r",
+									"    pm.expect(pet.category.name).to.eql(pm.collectionVariables.get(\"Name1\"));\r",
+									"});\r",
+									"\r",
+									"//pet name value\r",
+									"    pm.test(\"check pet name value\",function(){\r",
+									"    pm.expect(pet.name).to.eql(pm.collectionVariables.get(\"Name2\"));\r",
+									"});\r",
+									"\r",
+									"//pet photoUrls value\r",
+									"    pm.test(\"check url value\",function(){\r",
+									"    pm.expect(pet.photoUrls[0]).to.eql(\"https://example.com/dog.jpg\");\r",
+									"});\r",
+									"\r",
+									"//pet tags value 1\r",
+									"    pm.test(\"check tag id value\",function(){\r",
+									"    pm.expect(pet.tags[0].id).to.eql(pm.collectionVariables.get(\"tagId\"));\r",
+									"});\r",
+									"\r",
+									"//pet tags value 2\r",
+									"    pm.test(\"check tag name value\",function(){\r",
+									"    pm.expect(pet.tags[0].name).to.eql(pm.collectionVariables.get(\"Name3\"));\r",
+									"});\r",
+									"\r",
+									"//pet status value\r",
+									"    pm.test(\"check id value\",function(){\r",
+									"    pm.expect(pet.status).to.eql(pm.collectionVariables.get(\"status\"));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"}\r",
+									"    }"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/pet/findByStatus?status={{status}}",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"pet",
+								"findByStatus"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "{{status}}"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://petstore.swagger.io/v2/pet/findByStatus?status=available' \\\r\n  -H 'accept: application/js"
+					},
+					"response": []
+				},
+				{
+					"name": "DeletePetById",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const deletepet = pm.response.json();\r",
+									"var schema = \r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"pm.test(\"response should be 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//check schema validation\r",
+									"\r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"////request contain required field\r",
+									"pm.test(\"petId is passed in URL and is not null\", function () {\r",
+									"    const url = pm.request.url.toString(); \r",
+									"    const petid = pm.environment.get(\"petId\");\r",
+									"\r",
+									"    pm.expect(url).to.include(petid);\r",
+									"\r",
+									"    pm.expect(petid).to.not.be.null;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "api_key",
+								"value": "special-key",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pet/{{petId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pet",
+								"{{petId}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'DELETE' \\\r\n  'https://petstore.swagger.io/v2/pet/1' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ordermodel_positive_test",
+			"item": [
+				{
+					"name": "PlaceOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const randomnum = Math.floor(Math.random() * 10) + 1;\r",
+									"const shipDate = \"2025-06-26T18:31:24.719+0000\";\r",
+									"\r",
+									"function randomstatus() {\r",
+									"    var status = [ \"placed\", \"approved\", \"delivered\" ];\r",
+									"    var randomIndex = Math.floor(Math.random() * status.length);\r",
+									"\r",
+									"    return status[randomIndex];\r",
+									"}\r",
+									"function randomBoolean() {\r",
+									"    var status = [true, false];\r",
+									"    var randomIndex = Math.floor(Math.random() * status.length);\r",
+									"\r",
+									"    return status[randomIndex];\r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.environment.set(\"orderId\",randomnum);\r",
+									"pm.collectionVariables.set(\"quantity\", randomnum);\r",
+									"pm.collectionVariables.set(\"date\",shipDate);\r",
+									"pm.collectionVariables.set(\"status\",randomstatus());\r",
+									"pm.collectionVariables.set(\"complete\", randomBoolean());\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema = \r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"petId\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"quantity\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"shipDate\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"complete\": {\r",
+									"      \"type\": \"boolean\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"petId\",\r",
+									"    \"quantity\",\r",
+									"    \"shipDate\",\r",
+									"    \"status\",\r",
+									"    \"complete\"\r",
+									"  ]\r",
+									"}\r",
+									"const orders = pm.response.json();\r",
+									"\r",
+									"//schema validation\r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"//order id value\r",
+									"pm.test(\"check order id value\",function(){\r",
+									"    pm.expect(orders.id).to.eql(pm.environment.get(\"orderId\"));\r",
+									"});\r",
+									"//pet  id  value \r",
+									"pm.test(\"check pet id value\",function(){\r",
+									"    pm.expect(orders.petId).to.eql(pm.environment.get(\"petId\"));\r",
+									"});\r",
+									"//pet quantity value \r",
+									"pm.test(\"check order quantity value\", function () {\r",
+									"    pm.expect(orders.quantity).to.eql(pm.collectionVariables.get(\"quantity\"));\r",
+									"});\r",
+									"//date\r",
+									"pm.test(\"check order date  name value\",function(){\r",
+									"    pm.expect(orders.shipDate).to.eql(pm.collectionVariables.get(\"date\"));\r",
+									"});\r",
+									"//order status value\r",
+									"pm.test(\"check status  value\",function(){\r",
+									"    pm.expect(orders.status).to.eql(pm.collectionVariables.get(\"status\"));\r",
+									"});\r",
+									"//order complete value\r",
+									"pm.test(\"check complete value\",function(){\r",
+									"    pm.expect(orders.complete).to.eql(pm.collectionVariables.get(\"complete\"));\r",
+									"});\r",
+									"//pet status value\r",
+									"pm.test(\"order id not to be null\",function(){\r",
+									"    pm.expect(orders.id).to.not.eql(null);\r",
+									"});\r",
+									"//check if required field is null----\r",
+									"pm.test(\"petId not to be null\",function(){\r",
+									"    pm.expect(orders.petId).to.not.eql(null);\r",
+									"});\r",
+									"//\r",
+									"pm.test(\"order quantity not to be null\",function(){\r",
+									"    pm.expect(orders.quantity).to.not.eql(null);\r",
+									"});\r",
+									"//\r",
+									"pm.test(\"order shipDate not to be null\",function(){\r",
+									"    pm.expect(orders.shipDate).to.not.eql(null);\r",
+									"});\r",
+									"//\r",
+									"pm.test(\"order status  not to be null\",function(){\r",
+									"    pm.expect(orders.status).to.not.eql(null);\r",
+									"});\r",
+									"//\r",
+									"pm.test(\"order completion status not to be null\",function(){\r",
+									"    pm.expect(orders.complete).to.not.eql(null);\r",
+									"});\r",
+									"//\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{orderId}},\r\n  \"petId\": {{petId}},\r\n  \"quantity\": {{quantity}},\r\n  \"shipDate\": \"{{date}}\",\r\n  \"status\": \"{{status}}\",\r\n  \"complete\": {{complete}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/store/order",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"store",
+								"order"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://petstore.swagger.io/v2/store/order' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"id\": 0,\r\n  \"petId\": 0,\r\n  \"quantity\": 0,\r\n  \"shipDate\": \"2025-06-26T09:57:35.440Z\",\r\n  \"status\": \"placed\",\r\n  \"complete\": true\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "GetOrderByOrderId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseBody = pm.response.json();\r",
+									"\r",
+									"var schema =\r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"petId\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"quantity\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"shipDate\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"complete\": {\r",
+									"      \"type\": \"boolean\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"petId\",\r",
+									"    \"quantity\",\r",
+									"    \"shipDate\",\r",
+									"    \"status\",\r",
+									"    \"complete\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"response should be 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//schema validation\r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"check orderId\",function(){\r",
+									"    pm.expect(responseBody.id).to.eql(pm.environment.get(\"orderId\"));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"//pet  id  value \r",
+									"pm.test(\"check pet id value\",function(){\r",
+									"    pm.expect(responseBody.petId).to.eql(pm.environment.get(\"petId\"));\r",
+									"});\r",
+									"//pet quantity value \r",
+									"pm.test(\"check order quantity value\", function () {\r",
+									"    pm.expect(responseBody.quantity).to.eql(pm.collectionVariables.get(\"quantity\"));\r",
+									"});\r",
+									"//date\r",
+									"pm.test(\"check order date  name value\",function(){\r",
+									"    pm.expect(responseBody.shipDate).to.eql(pm.collectionVariables.get(\"date\"));\r",
+									"});\r",
+									"//order status value\r",
+									"pm.test(\"check status  value\",function(){\r",
+									"    pm.expect(responseBody.status).to.eql(pm.collectionVariables.get(\"status\"));\r",
+									"});\r",
+									"//order complete value\r",
+									"pm.test(\"check complete value\",function(){\r",
+									"    pm.expect(responseBody.complete).to.eql(pm.collectionVariables.get(\"complete\"));\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/store/order/{{orderId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"store",
+								"order",
+								"{{orderId}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://petstore.swagger.io/v2/store/order/1' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteOrderByOrderId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const deleteorder = pm.response.json();\r",
+									"var schema = \r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"\r",
+									"//check schema validation\r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"//status code\r",
+									"pm.test(\"response should be 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//required petId not to be null\r",
+									"pm.test(\"Orderid is passed in URL and is not null\", function () {\r",
+									"    const url = pm.request.url.toString(); \r",
+									"    const orderid = pm.environment.get(\"orderId\");\r",
+									"\r",
+									"    pm.expect(url).to.include(orderid);\r",
+									"\r",
+									"    pm.expect(orderid).to.not.be.null;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/store/order/{{orderId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"store",
+								"order",
+								"{{orderId}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'DELETE' \\\r\n  'https://petstore.swagger.io/v2/store/order/2' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usermodel_negative_test",
+			"item": [
+				{
+					"name": "CreateUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var createuser = pm.response.json();\r",
+									"\r",
+									"\r",
+									"\r",
+									"var CreateUserSchema=\r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"//check status code\r",
+									"pm.test(\"1.User Created Successfully\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"//check if response  schema is valid \r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(CreateUserSchema);\r",
+									"});\r",
+									"//check request body\r",
+									"pm.test(\"Request body has all required fields with correct types\", function () {\r",
+									"    const body = JSON.parse(pm.request.body.raw);\r",
+									"\r",
+									"    const expectedFields = {\r",
+									"        id: \"number\",\r",
+									"        username: \"string\",\r",
+									"        firstName: \"string\",\r",
+									"        lastName: \"string\",\r",
+									"        email: \"string\",\r",
+									"        password: \"string\",\r",
+									"        phone: \"string\",\r",
+									"        userStatus: \"number\"\r",
+									"    };\r",
+									"\r",
+									"    for (let key in expectedFields) {\r",
+									"        pm.expect(body).to.have.property(key);\r",
+									"        pm.expect(body[key]).to.be.a(expectedFields[key]);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const randomnum = Math.floor((Math.random()*100+1));\r",
+									"var randomstring =Math.random().toString(36).substring(2);\r",
+									"\r",
+									"\r",
+									"pm.collectionVariables.set(\"id\",randomnum),\r",
+									"pm.environment.set(\"username\",randomstring),\r",
+									"pm.collectionVariables.set(\"firstname\",\"Jack\"),\r",
+									"pm.collectionVariables.set(\"lastname\",\"Smith\"),\r",
+									"pm.collectionVariables.set(\"email\",randomstring+\"gmail.com\"),\r",
+									"pm.collectionVariables.set(\"password\",randomstring),\r",
+									"pm.collectionVariables.set(\"phone\",\"592286745\"),\r",
+									"pm.collectionVariables.set(\"status\",0)\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{id}},\r\n  \"username\": \"{{username}}\",\r\n  \"firstName\": \"{{firstname}}\",\r\n  \"lastName\": \"{{lastname}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"phone\": \"{{phone}}\",\r\n  \"userStatus\": {{status}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://petstore.swagger.io/v2/user' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"id\": 0,\r\n  \"username\": \"jack123\",\r\n  \"firstName\": \"jack\",\r\n  \"lastName\": \"string\",\r\n  \"email\": \"string\",\r\n  \"password\": \"string\",\r\n  \"phone\": \"string\",\r\n  \"userStatus\": 0\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUserByUsername",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const deleteuser = pm.response.json();\r",
+									"\r",
+									"\r",
+									"var DeleteSchema =  \r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"//check schema validation\r",
+									"pm.test(\"1.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(DeleteSchema);\r",
+									"});\r",
+									"\r",
+									"//check status code\r",
+									"pm.test(\"2.response should be 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//request contain required field\r",
+									"pm.test(\"Username is passed in URL and is not empty\", function () {\r",
+									"    const url = pm.request.url.toString(); \r",
+									"    const username = pm.environment.get(\"username\");\r",
+									"\r",
+									"    pm.expect(url).to.include(username);\r",
+									"\r",
+									"    ;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/{{username}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"{{username}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'DELETE' \\\r\n  'https://petstore.swagger.io/v2/user/string' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserByUsername",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var getuser = pm.response.json();\r",
+									"\r",
+									"var schema = \r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"//schema validation\r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"//status code\r",
+									"pm.test(\"9.response should be 404\",function(){\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/{{username}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"{{username}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://petstore.swagger.io/v2/user/Milena123' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Update_Deleted_Pet",
+			"item": [
+				{
+					"name": "AddPet",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateId() {\r",
+									"  return Math.floor(Math.random() * 100 + 100);\r",
+									"}\r",
+									"pm.environment.set(\"petId\",generateId());\r",
+									"pm.collectionVariables.set(\"tagId\", generateId());\r",
+									"pm.collectionVariables.set(\"categoryId\", generateId());\r",
+									"\r",
+									"function randomName() {\r",
+									"   var nameLength = Math.floor(Math.random() * 3) + 8; // \r",
+									"   var name = '';\r",
+									"   var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+									"\r",
+									"   for (var i = 0; i < nameLength; i++) {\r",
+									"       name += characters.charAt(Math.floor(Math.random() * characters.length));\r",
+									"   }\r",
+									"\r",
+									"   return name;\r",
+									"}\r",
+									"pm.collectionVariables.set(\"Name1\",randomName());\r",
+									"pm.collectionVariables.set(\"Name2\", randomName());\r",
+									"pm.collectionVariables.set(\"Name3\", randomName());\r",
+									"\r",
+									"function randomStatus() {\r",
+									"    var status = ['available', 'pending','sold'];\r",
+									"    var randomIndex = Math.floor(Math.random() * status.length);\r",
+									"\r",
+									"    return status[randomIndex];\r",
+									"}\r",
+									"pm.collectionVariables.set(\"status\",randomStatus())\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const addpet = pm.response.json();\r",
+									"\r",
+									"const schema =\r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"category\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"number\"\r",
+									"        },\r",
+									"        \"name\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"name\"\r",
+									"      ]\r",
+									"    },\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"photoUrls\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": {\r",
+									"        \"type\": \"string\"\r",
+									"      }\r",
+									"    },\r",
+									"    \"tags\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"          \"id\": {\r",
+									"            \"type\": \"number\"\r",
+									"          },\r",
+									"          \"name\": {\r",
+									"            \"type\": \"string\"\r",
+									"          }\r",
+									"        },\r",
+									"        \"required\": [\r",
+									"          \"id\",\r",
+									"          \"name\"\r",
+									"        ]\r",
+									"      }\r",
+									"    },\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"category\",\r",
+									"    \"name\",\r",
+									"    \"photoUrls\",\r",
+									"    \"tags\",\r",
+									"    \"status\"\r",
+									"  ]\r",
+									"}\r",
+									"//pet schema validation\r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"//status code \r",
+									"pm.test(\"response should be 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//pet id value\r",
+									"pm.test(\"check pet id value\",function(){\r",
+									"    pm.expect(addpet.id).to.eql(pm.environment.get(\"petId\"));\r",
+									"});\r",
+									"//pet category value 1\r",
+									"pm.test(\"check category id value\",function(){\r",
+									"    pm.expect(addpet.category.id).to.eql(pm.collectionVariables.get(\"categoryId\"));\r",
+									"});\r",
+									"//pet category value 2\r",
+									"pm.test(\"check pet category name value\",function(){\r",
+									"    pm.expect(addpet.category.name).to.eql(pm.collectionVariables.get(\"Name1\"));\r",
+									"});\r",
+									"//pet name value\r",
+									"pm.test(\"check pet name value\",function(){\r",
+									"    pm.expect(addpet.name).to.eql(pm.collectionVariables.get(\"Name2\"));\r",
+									"});\r",
+									"//pet photoUrls value\r",
+									"pm.test(\"check url value\",function(){\r",
+									"    pm.expect(addpet.photoUrls[0]).to.eql(\"https://example.com/dog.jpg\");\r",
+									"});\r",
+									"//pet tags value 1\r",
+									"pm.test(\"check tag id value\",function(){\r",
+									"    pm.expect(addpet.tags[0].id).to.eql(pm.collectionVariables.get(\"tagId\"));\r",
+									"});\r",
+									"//pet tags value 2\r",
+									"pm.test(\"check tag name value\",function(){\r",
+									"    pm.expect(addpet.tags[0].name).to.eql(pm.collectionVariables.get(\"Name3\"));\r",
+									"});\r",
+									"//pet status value\r",
+									"pm.test(\"check id value\",function(){\r",
+									"    pm.expect(addpet.status).to.eql(pm.collectionVariables.get(\"status\"));\r",
+									"});\r",
+									"//required feald\r",
+									"\r",
+									"\r",
+									"pm.test(\"should not be null\", function () {\r",
+									"    pm.expect(addpet).to.not.be.null;\r",
+									"    pm.expect(addpet.petId).to.not.be.null;\r",
+									"    pm.expect(addpet.category.id).to.not.be.null;\r",
+									"    pm.expect(addpet.category.name).to.not.be.null;\r",
+									"    pm.expect(addpet.name).to.not.be.null;\r",
+									"    pm.expect(addpet.photoUrls[0]).to.not.be.null;\r",
+									"    pm.expect(addpet.tags[0].id).to.not.be.null;\r",
+									"    pm.expect(addpet.tags[0].name).to.not.be.null;\r",
+									"    pm.expect(addpet.status).to.not.be.null;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{petId}},\r\n  \"category\": {\r\n    \"id\": {{categoryId}},\r\n    \"name\": \"{{Name1}}\"\r\n  },\r\n  \"name\": \"{{Name2}}\",\r\n  \"photoUrls\": [\r\n    \"https://example.com/dog.jpg\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": {{tagId}},\r\n      \"name\": \"{{Name3}}\"\r\n    }\r\n  ],\r\n  \"status\":\"{{status}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pet",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pet"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://petstore.swagger.io/v2/pet' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"id\": 0,\r\n  \"category\": {\r\n    \"id\": 0,\r\n    \"name\": \"toby\"\r\n  },\r\n  \"name\": \"doggie\",\r\n  \"photoUrls\": [\r\n    \"string\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 0,\r\n      \"name\": \"string\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "DeletePetById",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"var schema = \r",
+									"{\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"pm.test(\"1.response should be 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//check schema validation\r",
+									"\r",
+									"pm.test(\"2.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"////request contain required field\r",
+									"pm.test(\"3.petId is passed in URL and is not null\", function () {\r",
+									"    const url = pm.request.url.toString(); \r",
+									"    const petid = pm.environment.get(\"petId\");\r",
+									"\r",
+									"    pm.expect(url).to.include(petid);\r",
+									"\r",
+									"    pm.expect(petid).to.not.be.null;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "api_key",
+								"value": "special-key",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pet/{{petId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pet",
+								"{{petId}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'DELETE' \\\r\n  'https://petstore.swagger.io/v2/pet/1' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "ChangePetInformation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateId() {\r",
+									"  return Math.floor(Math.random() * 100 + 100);\r",
+									"}\r",
+									"\r",
+									"function randomName() {\r",
+									"   var nameLength = Math.floor(Math.random() * 3) + 8; // \r",
+									"   var name = '';\r",
+									"   var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+									"\r",
+									"   for (var i = 0; i < nameLength; i++) {\r",
+									"       name += characters.charAt(Math.floor(Math.random() * characters.length));\r",
+									"   }\r",
+									"\r",
+									"   return name;\r",
+									"}\r",
+									"pm.collectionVariables.set(\"Name1\",randomName());\r",
+									"\r",
+									"function randomStatus() {\r",
+									"    var status = ['available', 'pending','sold'];\r",
+									"    var randomIndex = Math.floor(Math.random() * status.length);\r",
+									"\r",
+									"    return status[randomIndex];\r",
+									"}\r",
+									"pm.collectionVariables.set(\"status\",randomStatus())\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var schema = {\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"const responseBody = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test(\"response should be 404\",function(){\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"//check schema validation\r",
+									"\r",
+									"pm.test(\"3.Schema is valid\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"//\r",
+									"pm.test(\"petId is passed in URL and is not empty\", function () {\r",
+									"    const url = pm.request.url.toString(); \r",
+									"    const petid = pm.environment.get(\"petId\");\r",
+									"\r",
+									"    pm.expect(url).to.include(petid);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "{{Name1}}",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "{{status}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/v2/pet/{{petId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v2",
+								"pet",
+								"{{petId}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://petstore.swagger.io/v2/pet/1' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/x-www-form-urlencoded' \\\r\n  -d 'name=%E1%83%A1%E1%83%93%E1%83%91%E1%83%B0%E1%83%A1%E1%83%93&status=%E1%83%A1%E1%83%93%E1%83%9C%E1%83%AF%E1%83%90%E1%83%A1%E1%83%A4'"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": ""
+		},
+		{
+			"key": "firstname",
+			"value": ""
+		},
+		{
+			"key": "lastname",
+			"value": ""
+		},
+		{
+			"key": "email",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		},
+		{
+			"key": "phone",
+			"value": ""
+		},
+		{
+			"key": "userstatus",
+			"value": ""
+		},
+		{
+			"key": "status",
+			"value": ""
+		},
+		{
+			"key": "RequestBody",
+			"value": ""
+		},
+		{
+			"key": "CreateUserSchema",
+			"value": ""
+		},
+		{
+			"key": "ID",
+			"value": ""
+		},
+		{
+			"key": "Name1",
+			"value": ""
+		},
+		{
+			"key": "Name2",
+			"value": ""
+		},
+		{
+			"key": "Name3",
+			"value": ""
+		},
+		{
+			"key": "tagId",
+			"value": ""
+		},
+		{
+			"key": "categoryId",
+			"value": ""
+		},
+		{
+			"key": "quantity",
+			"value": ""
+		},
+		{
+			"key": "date",
+			"value": ""
+		},
+		{
+			"key": "complete",
+			"value": ""
+		}
+	]
+}
